@@ -49,7 +49,7 @@ jobs:
         if: env.diff == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
-          host: smtp.gmail.com
+          host: smtp.office365.com
           port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
@@ -60,6 +60,7 @@ jobs:
             Content has been updated!
             First Content: ${{ steps.run_script.outputs.first_content }}
             Second Content: ${{ steps.run_script.outputs.second_content }}
+          secure: true  # Ensure secure connection
 
       - name: Save current content for next run
         run: |
