@@ -1,4 +1,4 @@
-name: Notify on Content Change
+name: Daily Email Notification
 
 on:
   schedule:
@@ -28,25 +28,24 @@ jobs:
           python script.py
         continue-on-error: true
 
-      - name: Check for content changes
-        id: check_changes
-        run: |
-          if [ -f previous_content.txt ]; then
-            if diff last_content.txt previous_content.txt > /dev/null; then
-              echo "No changes detected"
-              echo "diff=false" >> $GITHUB_ENV
-            else
-              echo "Changes detected"
-              echo "diff=true" >> $GITHUB_ENV
-            fi
-          else
-            echo "No previous content to compare"
-            echo "diff=true" >> $GITHUB_ENV
-          fi
-        continue-on-error: true
+      #- name: Check for content changes
+      #  id: check_changes
+      #  run: |
+      #    if [ -f previous_content.txt ]; then
+      #      if diff last_content.txt previous_content.txt > /dev/null; then
+      #        echo "No changes detected"
+      #        echo "diff=false" >> $GITHUB_ENV
+      #      else
+      #        echo "Changes detected"
+      #        echo "diff=true" >> $GITHUB_ENV
+      #      fi
+      #    else
+      #      echo "No previous content to compare"
+      #      echo "diff=true" >> $GITHUB_ENV
+      #    fi
+      #  continue-on-error: true
 
       - name: Send email notification
-        if: env.diff == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp-mail.outlook.com
@@ -55,13 +54,18 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           to: ${{ secrets.EMAIL_USERNAME_TO }}
           from: ${{ secrets.EMAIL_USERNAME }}
-          subject: CottonCarrier Coupon Update - Set Up By STEVEN BRADLEY
+          subject: CottonCarrier Coupon Daily Update - Set Up By STEVEN BRADLEY
           body: |
-            Content has been updated!
-            First Content: ${{ steps.run_script.outputs.first_content }}
-            Second Content: ${{ steps.run_script.outputs.second_content }}
+            This is your daily email notification.
+            Content from the Python script:
+            echo "First content: ${{ env.FIRST_CONTENT }}"
+            echo "Second content: ${{ env.SECOND_CONTENT }}"
 
 
-      - name: Save current content for next run
-        run: |
-          cp last_content.txt previous_content.txt
+      #- name: Save current content for next run
+      #  run: |
+      #      if [ -f last_content.txt ]; then
+      #          cp last_content.txt previous_content.txt
+      #      else
+      #          echo "last_content.txt does not exist. Skipping copy."
+      #      fi

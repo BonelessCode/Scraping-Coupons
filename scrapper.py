@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import os
 
 # Headers to avoid bot detection
 headers = {
@@ -23,10 +24,11 @@ second_static_data = soup.find('p', class_='body-2 text-gray-60 dark:text-white 
 first_content = first_static_data.text if first_static_data else 'No content found'
 second_content = second_static_data.text if second_static_data else 'No content found'
 
-# Write the content to the file
-with open('current_content.txt', 'w') as f:
-    f.write(f"{first_content}\n{second_content}")
+# Print the contents
+print(f"First content: {first_content}")
+print(f"Second content: {second_content}")
 
-# Print content for GitHub Actions output
-print(f"::set-output name=first_content::{first_content}")
-print(f"::set-output name=second_content::{second_content}")
+# Write the output to the GitHub Actions environment file
+with open(os.getenv('GITHUB_ENV', ''), 'a') as f:
+    f.write(f'FIRST_CONTENT={first_content}\n')
+    f.write(f'SECOND_CONTENT={second_content}\n')
