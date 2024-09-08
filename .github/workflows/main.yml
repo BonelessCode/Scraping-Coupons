@@ -67,6 +67,15 @@ jobs:
           --data '{"text":"Mise à jour des coupons CottonCarrier\nCode: ${{ env.COUPON_CODE }}\nDescription: ${{ env.COUPON_DESCRIPTION }}"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
+      - name: Check API access
+        run: |
+          gh api /repos/${{ github.repository }}/actions/variables
+        env:
+          GH_TOKEN: ${{ secrets.YOUR_PAT_SECRET }}
+
+      - name: Debug token
+        run: |
+          echo "GH_TOKEN exists: ${YOUR_PAT_SECRET:+yes}"
 
       - name: Update GitHub Variables with current coupon data
         if: env.CHANGED == 'true'
@@ -82,4 +91,4 @@ jobs:
             -f name=PREVIOUS_COUPON_DESCRIPTION \
             -f value="${{ env.COUPON_DESCRIPTION }}"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.YOUR_PAT_SECRET }}
