@@ -80,3 +80,5 @@ jobs:
             /repos/${{ github.repository }}/actions/variables/PREVIOUS_COUPON_DESCRIPTION \
             -f name=PREVIOUS_COUPON_DESCRIPTION \
             -f value="${{ env.COUPON_DESCRIPTION }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
