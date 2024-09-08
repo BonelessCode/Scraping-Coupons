@@ -60,6 +60,14 @@ jobs:
             Content from the Python script:
             Code: ${{ env.FIRST_CONTENT }}
             Description: ${{ env.SECOND_CONTENT }}
+        continue-on-error: true
+
+      - name: Envoyer une notification Slack
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"Mise à jour des coupons CottonCarrier\nCode: ${{ env.FIRST_CONTENT }}\nDescription: ${{ env.SECOND_CONTENT }}"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
 
 
       #- name: Save current content for next run
