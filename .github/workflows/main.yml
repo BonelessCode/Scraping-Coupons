@@ -39,6 +39,7 @@ jobs:
           else:
             echo "No changes detected"
             echo "CHANGED=false" >> $GITHUB_ENV
+          fi
 
       - name: Send email notification if changes detected
         if: env.CHANGED == 'true'
