@@ -58,8 +58,8 @@ jobs:
           body: |
             This is your daily email notification.
             Content from the Python script:
-            echo "First content: ${{ env.FIRST_CONTENT }}"
-            echo "Second content: ${{ env.SECOND_CONTENT }}"
+            Code: ${{ env.FIRST_CONTENT }}
+            Description: ${{ env.SECOND_CONTENT }}
 
 
       #- name: Save current content for next run
