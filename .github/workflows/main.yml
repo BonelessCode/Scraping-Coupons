@@ -1,0 +1,66 @@
+name: Notify on Content Change
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Runs daily at 09:00 UTC
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run script
+        id: run_script
+        run: |
+          python script.py
+        continue-on-error: true
+
+      - name: Check for content changes
+        id: check_changes
+        run: |
+          if [ -f previous_content.txt ]; then
+            if diff last_content.txt previous_content.txt > /dev/null; then
+              echo "No changes detected"
+              echo "diff=false" >> $GITHUB_ENV
+            else
+              echo "Changes detected"
+              echo "diff=true" >> $GITHUB_ENV
+            fi
+          else
+            echo "No previous content to compare"
+            echo "diff=true" >> $GITHUB_ENV
+          fi
+        continue-on-error: true
+
+      - name: Send email notification
+        if: env.diff == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          host: smtp.gmail.com
+          port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          to: ${{ secrets.EMAIL_USERNAME_TO }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          subject: CottonCarrier Coupon Update - Set Up By STEVEN BRADLEY
+          body: |
+            Content has been updated!
+            First Content: ${{ steps.run_script.outputs.first_content }}
+            Second Content: ${{ steps.run_script.outputs.second_content }}
+
+      - name: Save current content for next run
+        run: |
+          cp last_content.txt previous_content.txt
