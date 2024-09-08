@@ -28,24 +28,20 @@ jobs:
           python scrapper.py
         continue-on-error: true
 
-      #- name: Check for content changes
-      #  id: check_changes
-      #  run: |
-      #    if [ -f previous_content.txt ]; then
-      #      if diff last_content.txt previous_content.txt > /dev/null; then
-      #        echo "No changes detected"
-      #        echo "diff=false" >> $GITHUB_ENV
-      #      else
-      #        echo "Changes detected"
-      #        echo "diff=true" >> $GITHUB_ENV
-      #      fi
-      #    else
-      #      echo "No previous content to compare"
-      #      echo "diff=true" >> $GITHUB_ENV
-      #    fi
-      #  continue-on-error: true
+      - name: Compare current coupon data with previous
+        id: check_changes
+        run: |
+          echo "Previous code: ${{ vars.PREVIOUS_COUPON_CODE }}"
+          echo "Previous description: ${{ vars.PREVIOUS_COUPON_DESCRIPTION }}"
+          if [[ "${{ env.COUPON_CODE }}" != "${{ vars.PREVIOUS_COUPON_CODE }}" || "${{ env.COUPON_DESCRIPTION }}" != "${{ vars.PREVIOUS_COUPON_DESCRIPTION }}" ]]; then
+            echo "Changes detected"
+            echo "CHANGED=true" >> $GITHUB_ENV
+          else:
+            echo "No changes detected"
+            echo "CHANGED=false" >> $GITHUB_ENV
 
-      - name: Send email notification
+      - name: Send email notification if changes detected
+        if: env.CHANGED == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp-mail.outlook.com
@@ -58,22 +54,28 @@ jobs:
           body: |
             This is your daily email notification.
             Content from the Python script:
-            Code: ${{ env.FIRST_CONTENT }}
-            Description: ${{ env.SECOND_CONTENT }}
+            Code: ${{ env.COUPON_CODE }}
+            Description: ${{ env.COUPON_DESCRIPTION }}
         continue-on-error: true
 
-      - name: Envoyer une notification Slack
+      - name: Send Slack notification if changes detected
+        if: env.CHANGED == 'true'
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"Mise à jour des coupons CottonCarrier\nCode: ${{ env.FIRST_CONTENT }}\nDescription: ${{ env.SECOND_CONTENT }}"}' \
+          --data '{"text":"Mise à jour des coupons CottonCarrier\nCode: ${{ env.COUPON_CODE }}\nDescription: ${{ env.COUPON_DESCRIPTION }}"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-
-      #- name: Save current content for next run
-      #  run: |
-      #      if [ -f last_content.txt ]; then
-      #          cp last_content.txt previous_content.txt
-      #      else
-      #          echo "last_content.txt does not exist. Skipping copy."
-      #      fi
+      - name: Update GitHub Variables with current coupon data
+        if: env.CHANGED == 'true'
+        run: |
+          gh api --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/actions/variables/PREVIOUS_COUPON_CODE \
+            -f name=PREVIOUS_COUPON_CODE \
+            -f value="${{ env.COUPON_CODE }}"
+          gh api --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/actions/variables/PREVIOUS_COUPON_DESCRIPTION \
+            -f name=PREVIOUS_COUPON_DESCRIPTION \
+            -f value="${{ env.COUPON_DESCRIPTION }}"

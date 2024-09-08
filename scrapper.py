@@ -21,14 +21,14 @@ first_static_data = soup.find('span', class_='body-2 truncate uppercase')
 second_static_data = soup.find('p', class_='body-2 text-gray-60 dark:text-white mt-8')
 
 # Extract content
-first_content = first_static_data.text if first_static_data else 'No content found'
-second_content = second_static_data.text if second_static_data else 'No content found'
+code = first_static_data.text if first_static_data else 'No content found'
+description = second_static_data.text if second_static_data else 'No content found'
 
 # Print the contents
-print(f"First content: {first_content}")
-print(f"Second content: {second_content}")
+print(f"Code: {code}")
+print(f"Description: {description}")
 
 # Write the output to the GitHub Actions environment file
 with open(os.getenv('GITHUB_ENV', ''), 'a') as f:
-    f.write(f'FIRST_CONTENT={first_content}\n')
-    f.write(f'SECOND_CONTENT={second_content}\n')
+    f.write(f'COUPON_CODE={code}\n')
+    f.write(f'COUPON_DESCRIPTION={description}\n')
