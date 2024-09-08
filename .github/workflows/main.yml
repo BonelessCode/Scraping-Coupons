@@ -51,7 +51,6 @@ jobs:
         with:
           server_address: smtp-mail.outlook.com
           server_port: 587
-          secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           to: ${{ secrets.EMAIL_USERNAME_TO }}
