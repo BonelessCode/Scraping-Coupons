@@ -1,4 +1,4 @@
-name: Daily Email Notification
+name: Daily Coupon Change Check & Notify
 
 on:
   schedule:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   notify:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
