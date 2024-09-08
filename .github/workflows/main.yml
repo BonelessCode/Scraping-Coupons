@@ -36,7 +36,7 @@ jobs:
           if [[ "${{ env.COUPON_CODE }}" != "${{ vars.PREVIOUS_COUPON_CODE }}" || "${{ env.COUPON_DESCRIPTION }}" != "${{ vars.PREVIOUS_COUPON_DESCRIPTION }}" ]]; then
             echo "Changes detected"
             echo "CHANGED=true" >> $GITHUB_ENV
-          else:
+          else
             echo "No changes detected"
             echo "CHANGED=false" >> $GITHUB_ENV
           fi
