@@ -24,7 +24,7 @@ first_content = first_static_data.text if first_static_data else 'No content fou
 second_content = second_static_data.text if second_static_data else 'No content found'
 
 # Write the content to the file
-with open('last_content.txt', 'w') as f:
+with open('current_content.txt', 'w') as f:
     f.write(f"{first_content}\n{second_content}")
 
 # Print content for GitHub Actions output
