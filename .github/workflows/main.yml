@@ -85,7 +85,7 @@ jobs:
           gh api --method PATCH \
             -H "Accept: application/vnd.github+json" \
             /repos/${{ github.repository }}/actions/variables/PREVIOUS_COUPON_DISCOUNT \
-            -f name=PREVIOUS_COUPON_CODE \
+            -f name=PREVIOUS_COUPON_DISCOUNT \
             -f value="${{ env.COUPON_DISCOUNT }}"        
           gh api --method PATCH \
             -H "Accept: application/vnd.github+json" \
