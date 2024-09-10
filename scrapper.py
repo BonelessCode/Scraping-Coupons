@@ -17,18 +17,23 @@ if response.status_code == 429:
 
 soup = BeautifulSoup(response.text, 'html.parser')
 
+
+zeroth_static_data = soup.find('h4', class_='subheadline-2 capitalize select-none truncate text-left')
 first_static_data = soup.find('span', class_='body-2 truncate uppercase')
 second_static_data = soup.find('p', class_='body-2 text-gray-60 dark:text-white mt-8')
 
 # Extract content
+discount = zeroth_static_data.text if zeroth_static_data else 'No content found'
 code = first_static_data.text if first_static_data else 'No content found'
 description = second_static_data.text if second_static_data else 'No content found'
 
 # Print the contents
+print(f"Discount: {discount}")
 print(f"Code: {code}")
 print(f"Description: {description}")
 
 # Write the output to the GitHub Actions environment file
 with open(os.getenv('GITHUB_ENV', ''), 'a') as f:
+    f.write(f'COUPON_DISCOUNT={discount}\n')    
     f.write(f'COUPON_CODE={code}\n')
     f.write(f'COUPON_DESCRIPTION={description}\n')
