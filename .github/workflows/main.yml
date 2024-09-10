@@ -2,7 +2,9 @@ name: Daily Coupon Change Check & Notify
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # Runs daily at 09:00 UTC
+    - cron: '0 9 * * *'   # Runs daily at 09:00 UTC
+    - cron: '0 13 * * *'  # Runs daily at 13:00 UTC
+    - cron: '0 17 * * *'  # Runs daily at 17:00 UTC
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
