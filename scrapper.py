@@ -20,10 +20,19 @@ if response.status_code == 429:
 
 soup = BeautifulSoup(response.text, 'html.parser')
 
+# Locate the 'best-deal-section' first
+best_deal_section = soup.find('section', id='best-deal-section')
 
-zeroth_static_data = soup.find('h4', class_=['text-left', 'capitalize', 'truncate', 'select-none', 'subheadline-2'])
-first_static_data = soup.find('span', class_=['body-2', 'truncate', 'uppercase'])
-second_static_data = soup.find('p', class_=['mt-8', 'body-2', 'text-gray-60', 'dark:text-white'])
+# If the section is found, then find the required elements within it
+if best_deal_section:
+    zeroth_static_data = best_deal_section.find('h4', class_=['text-left', 'capitalize', 'truncate', 'select-none', 'subheadline-2'])
+    first_static_data = best_deal_section.find('span', class_=['body-2', 'truncate', 'uppercase'])
+
+    second_static_data = best_deal_section.find('p', class_=['mt-8', 'body-2', 'text-gray-60', 'dark:text-white'])
+else:
+    zeroth_static_data = None
+    first_static_data = None
+    second_static_data = None
 
 # Extract content
 discount = zeroth_static_data.text if zeroth_static_data else 'No content found'
