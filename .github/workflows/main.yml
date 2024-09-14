@@ -68,8 +68,9 @@ jobs:
         if: env.CHANGED == 'true'
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"Mise à jour des coupons CottonCarrier\nDiscount:${{ env.COUPON_DISCOUNT }}\nCode: ${{ env.COUPON_CODE }}\nDescription: ${{ env.COUPON_DESCRIPTION }}"}' \
+          --data "{\"text\":\"Mise à jour des coupons CottonCarrier\nDiscount:${{ env.COUPON_DISCOUNT }}\nCode: ${{ env.COUPON_CODE }}\nDescription: ${{ env.COUPON_DESCRIPTION }}\"}" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
+      
 
       - name: Check API access
         run: |
